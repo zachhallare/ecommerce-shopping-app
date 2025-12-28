@@ -1,15 +1,24 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const userRoute = require("./routes/user")
+
+dotenv.config();
 
 mongoose
-    .connect(MONGO_URI)
+    .connect(process.env.MONGO_URL)
     .then(() => console.log("DB Connected Successful"))
     .catch((err) => {
         console.log(err);
-    });
+    }
+);
 
-app.listen(5000, () => {
+app.use(express.json());
+app.use("/api/users", userRoute);
+
+app.listen(process.env.PORT, () => {
     console.log("Server is running");
 });
 
+// 18:47
