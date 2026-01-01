@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Admin | Product Management</title>
+    <meta name="description" content="Admin dashboard for managing products in your e-commerce store">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🛍️</span>
+                    <h1>E-Commerce Admin</h1>
+                </div>
+                <div class="auth-status" id="auth-status">
+                    <button class="btn btn-primary" id="login-btn">Login</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Login Modal -->
+        <div class="modal" id="login-modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Admin Login</h2>
+                    <button class="modal-close" id="login-modal-close">&times;</button>
+                </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-error" id="login-error"></div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Alert Message -->
+            <div class="alert" id="alert"></div>
+
+            <!-- Products Section -->
+            <section class="section" id="products-section">
+                <div class="section-header">
+                    <h2>Products</h2>
+                    <button class="btn btn-primary" id="add-product-btn" style="display: none;">
+                        <span>+</span> Add Product
+                    </button>
+                </div>
+                
+                <div class="products-grid" id="products-container">
+                    <!-- Products will be rendered here -->
+                </div>
+                
+                <div class="loading" id="products-loading">
+                    <div class="spinner"></div>
+                    <p>Loading products...</p>
+                </div>
+                
+                <div class="empty-state" id="products-empty" style="display: none;">
+                    <span class="empty-icon">📦</span>
+                    <p>No products found. Add your first product!</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Product Detail Modal -->
+        <div class="modal" id="product-modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content modal-lg">
+                <div class="modal-header">
+                    <h2 id="product-modal-title">Product Details</h2>
+                    <button class="modal-close" id="product-modal-close">&times;</button>
+                </div>
+                <div id="product-detail-container">
+                    <!-- Product details will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Form Modal -->
+        <div class="modal" id="product-form-modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content modal-lg">
+                <div class="modal-header">
+                    <h2 id="product-form-title">Add Product</h2>
+                    <button class="modal-close" id="product-form-modal-close">&times;</button>
+                </div>
+                <form id="product-form">
+                    <input type="hidden" id="product-id" name="id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-title">Title *</label>
+                            <input type="text" id="product-title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-price">Price *</label>
+                            <input type="number" id="product-price" name="price" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-desc">Description *</label>
+                        <textarea id="product-desc" name="desc" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-img">Image URL *</label>
+                        <input type="url" id="product-img" name="img" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-categories">Categories (comma-separated)</label>
+                            <input type="text" id="product-categories" name="categories" placeholder="e.g. electronics, gadgets">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-size">Size</label>
+                            <input type="text" id="product-size" name="size" placeholder="e.g. M, L, XL">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-color">Color</label>
+                        <input type="text" id="product-color" name="color" placeholder="e.g. Red, Blue">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-product-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="save-product-btn">Save Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal" id="delete-modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content modal-sm">
+                <div class="modal-header">
+                    <h2>Confirm Delete</h2>
+                    <button class="modal-close" id="delete-modal-close">&times;</button>
+                </div>
+                <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="cancel-delete-btn">Cancel</button>
+                    <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Handlebars Templates -->
+    
+    <!-- Product Card Template -->
+    <script id="product-card-template" type="text/x-handlebars-template">
+        {{#each products}}
+        <div class="product-card" data-id="{{_id}}">
+            <div class="product-image">
+                <img src="{{img}}" alt="{{title}}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">{{title}}</h3>
+                <p class="product-desc">{{truncate desc 60}}</p>
+                <div class="product-meta">
+                    {{#if categories.length}}
+                    <span class="product-category">{{categories.[0]}}</span>
+                    {{/if}}
+                    <span class="product-price">${{formatPrice price}}</span>
+                </div>
+            </div>
+            <div class="product-actions">
+                <button class="btn btn-sm btn-secondary view-btn" data-id="{{_id}}">View</button>
+                {{#if ../isAdmin}}
+                <button class="btn btn-sm btn-primary edit-btn" data-id="{{_id}}">Edit</button>
+                <button class="btn btn-sm btn-danger delete-btn" data-id="{{_id}}">Delete</button>
+                {{/if}}
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+    <!-- Product Detail Template -->
+    <script id="product-detail-template" type="text/x-handlebars-template">
+        <div class="product-detail">
+            <div class="product-detail-image">
+                <img src="{{img}}" alt="{{title}}" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
+            </div>
+            <div class="product-detail-info">
+                <h3>{{title}}</h3>
+                <p class="price">${{formatPrice price}}</p>
+                <p class="description">{{desc}}</p>
+                {{#if categories.length}}
+                <div class="categories">
+                    <strong>Categories:</strong>
+                    {{#each categories}}
+                    <span class="tag">{{this}}</span>
+                    {{/each}}
+                </div>
+                {{/if}}
+                {{#if size}}
+                <p><strong>Size:</strong> {{size}}</p>
+                {{/if}}
+                {{#if color}}
+                <p><strong>Color:</strong> {{color}}</p>
+                {{/if}}
+            </div>
+        </div>
+    </script>
+
+    <!-- Handlebars CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.8/dist/handlebars.min.js"></script>
+    <!-- App Script -->
+    <script src="js/app.js"></script>
+</body>
+</html>
